@@ -43,6 +43,55 @@ function createUser(user: User): User{
 
 createUser({name: "hite", email:"h@gmail.com", isActive: false})
 
+//+++++++ READONLY and optional in typescript ///////
+
+type User2 = {
+    readonly _id: string,
+    name: string,
+    email: string,
+    isActive: boolean,
+    creditCardDetails?: number
+}
+
+const myUser: User2 = {
+    _id: "1234",
+    name: "hitesh",
+    email: "hitesh@lco.com",
+    isActive: true
+}
+
+myUser.email = "hitesh@gmail.com"
+// myUser._id = "1234" 
+
+type Test = {
+    readonly arr: Array<number>,
+    name: string,
+}
+//array can be changed even after it is readonly
+// because array is a reference type.
+
+const test: Test = {
+    arr: [1,2,3],
+    name: "hitesh"
+}
+
+test.arr.push(4);
+console.log(test.arr);
+
+// mix match type
+
+type cardNumber = {
+    carNumber: string
+}
+
+type cardDate = {
+    cardDate: string
+}
+
+type cardDetails = cardNumber & cardDate & {
+    cvv: number
+}
+
 
 
 

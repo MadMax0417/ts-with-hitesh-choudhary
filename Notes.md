@@ -173,3 +173,319 @@ function handleError(errMsg: string): never{
 
 *** 
 ## Object
+
+
+// const User = {
+//     name: 'hitesh',
+//     email: "hitesh@lco.com",
+//     isActive: true
+// }
+
+// function createUser({name:string, isActive:boolean}){}
+
+// createUser({name:"name", isActive:true});
+
+// let newCourse= {
+//     name: "hitesh and typescript",
+//     isPaid: false,
+//     duration: "120 mins"
+// }
+
+// function createCourse({name: string, isPaid: boolean}):{name:string, isPaid:boolean}{
+//     return {
+//         name: "reactJs",
+//         isPaid: false
+//     }
+// }
+
+// createCourse(newCourse)
+
+
+//+++++ Type Alias +++++++++++
+        type User = {
+            name: string,
+            email: string,
+            isActive: boolean
+        }
+
+        type MyString = string  
+//its weird bt u can use it 
+
+    function createUser(user: User): User{
+        return {
+            name: user.name,
+            email: user.email,
+            isActive: user.isActive,
+        }
+    }
+
+createUser({name: "hite", email:"h@gmail.com", isActive: false})
+
+
+
+
+export {}
+
+***
+## READONLY and optional in typescript
+
+type User2 = {
+    readonly _id: string,
+    name: string,
+    email: string,
+    isActive: boolean,
+    creditCardDetails?: number
+}
+
+const myUser: User2 = {
+    _id: "1234",
+    name: "hitesh",
+    email: "hitesh@lco.com",
+    isActive: true
+}
+
+myUser.email = "hitesh@gmail.com"
+// myUser._id = "1234" 
+
+type Test = {
+    readonly arr: Array<number>,
+    name: string,
+}
+//array can be changed even after it is readonly
+// because array is a reference type.
+
+const test: Test = {
+    arr: [1,2,3],
+    name: "hitesh"
+}
+
+test.arr.push(4);
+console.log(test.arr);
+
+// mix match type
+
+type cardNumber = {
+    carNumber: string
+}
+
+type cardDate = {
+    cardDate: string
+}
+
+type cardDetails = cardNumber & cardDate & {
+    cvv: number
+}
+
+*** 
+
+## Arrays in Typescript
+
+you can use number[], Array<"number">(without ")
+
+
+const superHeros: string[] = []
+
+
+superHeros.push("spiderman")
+superHeros.push("batman")
+superHeros.push("ironman")
+console.log(superHeros)
+
+
+const heroPowers: number[] = []
+//another way to define the same
+const heroPowers2: Array<number> = []
+
+
+heroPowers.push(2)
+heroPowers2.push(200)
+
+console.log(heroPowers)
+console.log(heroPowers2)
+
+
+type User = {
+    name: string,
+    isActive: boolean
+}
+
+const allUsers: User[] = []
+
+allUsers.push({
+    name: "hitesh",
+    isActive: true
+})
+
+console.log(allUsers);
+
+//array of arrays
+
+const MLModels: number[][] = [
+    [1, 2],
+    [3, 4],
+]
+
+const test: string[][] = [
+    ["1", "2"],
+    ["3", "4"],
+]
+
+
+*** 
+
+## Union Types in TS
+
+// Union Types 
+// Union types helps us to define multiple types for a variable
+// thus helps us aviod using "any" type
+
+
+// it is recommended to be as much strict as possible and dont over use it like string | number | boolean and what not
+    let userId: string | number = 334455
+
+    userId = "334455"
+    userId = 334455
+
+
+    type User = {
+        name: string,
+        id: number
+    }
+    type Admin = {
+        username: string,
+        id: number
+    }
+
+    let hitesh: User | Admin = {
+        name: "hitesh",
+        id: 38947589,
+    }
+
+    hitesh = {
+        username: "hitesh",
+        id: 2342,
+    }
+
+//this helps us while writing the function
+
+    function getDbId(id: string | number) {
+        //making some API calls
+        console.log(`DB id is: ${id}`);
+    }
+
+    getDbId(3)
+    getDbId("32")
+
+    function getDbId2(id: string | number) {
+        if(typeof id === "string"){
+            id.toLowerCase();
+            //this will not throw an error
+        }
+        if(typeof id === "number"){
+            id + 2
+            //this will not throw an error
+        }
+
+        // id.toLowerCase();
+        // this will throw an error because it is not a string, it is both string and number
+    }
+
+### array
+
+    const data: number[]  = [1,2,3, "4"]
+    const data2: string[]  = [1,2,3, "4"]
+
+//if u want both of them
+
+#### classic mistake
+    const data3: string[] | number[]  = [1,2,3, "4"]
+//either all the number or all the string
+
+    const data4: (string | number | boolean)[]  = [1,2,3, "4", true]
+
+//the goal behind TS is about how u are making your types stricts.
+
+    let pi:3.14 = 3.14
+    //no other than 3.14
+
+//usecases for very strict 
+    let seatAllotment:"aisle" | "middle" | "window"
+
+    seatAllotment = "aisle"
+    seatAllotment = "middle"
+    seatAllotment = "window"
+    //seatAllotment = "crew" 
+        //this will throw an error
+
+*** 
+
+## Tuples in TS 
+
+Almost like python but not that much well implemented in TS.
+ 
+ in broad categoryit is just like an array with some restrictions on to it.
+
+const user: string[] = ["hitesh"]
+
+
+//it should be in a specifical order
+let myTuple: [string, number, boolean] 
+
+myTuple = ["hitesh", 2, true]
+myTuple = [ 2, "shjdfgj", true] //will throw an error
+
+//tuple is about restricting u. so that u can have order of an data.
+
+let rgb: [number, number, number] = [255, 255, 123];
+
+type User = [number, string]
+    
+const newUser: User = [35461, "hitesh"]
+
+// there is something wrong about tuple
+
+newUser[1] = "hiteshdf"
+//value can be changed something
+
+newUser.push(3)
+newUser.pop()
+//value can be changed something
+
+export {}
+
+***
+## Enums in TS 
+
+const AISLE = 0
+const MIDDLE = 1
+const WINDOW = 2
+
+
+let seat;
+
+if(seat === 0) {
+
+}
+//it is more simple here => 
+
+enum SeatChoice {
+    AISLE = "aisle",
+    MIDDLE = "middle",
+    WINDOW = "window"
+}
+
+const hcSeat = SeatChoice.WINDOW; 
+
+//enums gets turned into IIFE while compilation
+// to avoid it use const before enum.
+
+const enum SeatChoice2 {
+    AISLE = "aisle",
+    MIDDLE = "middle",
+    WINDOW = "window"
+}
+
+***
+ 
+## Interface in typescript
+
