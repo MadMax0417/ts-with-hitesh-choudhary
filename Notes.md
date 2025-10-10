@@ -824,39 +824,238 @@ Protected keyword allows you to access in same class and any other class that in
 ## Generics in Typescript
 
     
+const score: Array<number> = [];
+const names: Array<string> = [];
 
+function identityOne(val: boolean | number): boolean | number {
+  return val;
+}
 
+function identityTwo(val: any): any {
+  return val;
+}
+//take number as an input and return as string it is not good idea
+//problem remains the same as before, as it does not know the type
 
+function identityThree<Type>(val: Type): Type {
+  return val;
+}
+// it is almost as any. the difference is once you pass the type, the value will be restricted to that type.
+//if u take number as an input, value will be automatically be number and so does the return value
+// you dont need to manually change it every single time
 
+//hover over it, you will understand the return value
+identityThree(3); //number
+identityThree("3"); //string
+identityThree(true); //boolean
+identityThree(null); //null
+identityThree(undefined); //undefined
 
+// kinda shortcut
 
+function identityFour<T>(val: T): T {
+  return val;
+}
 
+// you can also define ur own type
 
+interface Bottle {
+  brand: string;
+  price: number;
+}
+// if u are passing something of ur type u can use this syntax:  <Bottle>
+identityFour<Bottle>({ brand: "coca-cola", price: 10 });
 
 ---
 
 ## Generics in Array and Arrow functions in Typescript
 
+// generics in array and arrow fns in Ts
+
+//Array generics
+function getSearchProducts<T>(products: T[]): T[] {
+  return products;  
+}   
+
+function getSearchProducts2<T>(products: T[]): T  {
+// function getSearchProducts2<T>(products: T[]): T | undefined {
+    // db calls
+    const myIndex = 3
+    if(products.length <= myIndex){
+        throw new Error("Product not found")
+    }
+    return products[myIndex]!;  //non-null assertion
+    //its like trust me it wont be undefined        
+}
+
+//arrow function
+// you will see they put comma after type especially when they are working with generics in react, it shows that u it is not jsx.
+const getMoreSearchProducts = <T,>(product: T[]): T => {
+    // do some db operations
+    const myIndex = 4
+    //you can also use arrays methods 
+    return product[myIndex]!;
+}
 
 ---
 
 ## Generics Classes in Typescript
 
+// class 
+
+interface Quiz {
+    name: string;
+    type: string;
+}
+
+interface Course{
+    name: string;
+    author: string;
+    subject: string
+}
+
+class Saleable<T>{
+    public cart: T[] = [];
+
+    addToCart(product: T){
+        this.cart.push(product);
+    }
+    
+}
 
 ---
 
 ## Type Narrowing in typescript
 
+function detectType(val: number | string) {
+    if (typeof val === "string") {
+        return val.toLowerCase();
+    }
+    return val + 3;
+}
+
+function provideId(id: string | null) {
+    // cautioary tale
+    if (!id) {
+        console.log("Please provide an id");
+        return;
+    }
+    id.toLowerCase();
+}
+
+//make sure that u also be extra cautious when there is null as u put multiple checks in detectType function where there input either can be number or string 
+
+// use type guards (which is nothing but an extra check and just "typeof")
+
+
+
+
 ---
 
 ## The in operator narrowing 
 
+interface User {
+    name: string;
+    email: string;
+}
+
+interface Admin {
+    name: string;
+    email: string;
+    isAdmin: boolean;
+}
+
+function isAdminAccount(account: User | Admin) {
+    if ("isAdmin" in account) {
+        return account.isAdmin;
+    }
+}
+
+
 ---
 
 ## Instanceof and Types Predicates
+
+// types predicates
+
+
+type Fish = { swim: () => void };
+type Bird = { fly: () => void };
+
+//typecasting "is" we are returning the type, if we didnt use it, it will return boolean
+function isFish(pet: Fish | Bird): pet is Fish {
+    //typecasting "as"  
+    return (pet as Fish).swim !== undefined;
+}
+
+function getFood(pet: Fish | Bird) {
+    if (isFish(pet)) {
+        pet
+        return "fish food";
+    } else {
+        pet 
+        return "bird food";
+    }
+}
+
+
 ---
 
 ## Discriminated Union and Exhaustiveness Checking with never
+
+///// Discriminated Union and exhaustive checks with never
+
+
+/// discriminated union
+
+interface Circle {
+    kind: "circle";
+    radius: number;
+}
+
+interface Square {
+    kind: "square";
+    side: number;
+}
+
+interface Rectangle {
+    kind: "rectangle";
+    length: number;
+    width: number;
+}
+
+type Shape = Circle | Square ;   
+
+function getTrueShape(shape: Shape) {
+    //we are returning the area of the circle | square
+    if(shape.kind === "circle") {
+        return Math.PI * shape.radius ** 2
+    }
+    return shape.side * shape.side
+}
+
+//never type 
+
+function getArea(shape: Shape){ 
+    switch(shape.kind){
+        case "circle" :
+            return Math.PI * shape.radius ** 2
+        case "square" : 
+            return shape.side * shape.side
+        
+            //precautionaly check
+            // should have exhaustive check with type never
+            // and u shud return it.
+            // also when u add a new shape and u didnt add it here, it will throw an error 
+         default:
+            const _exhaustiveCheck: never = shape
+            return _exhaustiveCheck
+    }
+}
+
+// never type is kinda cool rather than discriminated union
+
+
 ---
 
 ## TS End
